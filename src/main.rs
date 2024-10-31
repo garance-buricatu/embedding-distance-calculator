@@ -101,16 +101,14 @@ async fn main() {
         .collect::<Vec<_>>();
 
     match args.distance_metric {
-        DistanceMetric::Cosine => {
+        DistanceMetric::Cosine | DistanceMetric::Dot => {
             // Larger distance = higher similarity
             distances.sort_by(|a, b| b.partial_cmp(a).unwrap());
         }
-        DistanceMetric::L2 => {
+        DistanceMetric::L2 | DistanceMetric::Manhattan => {
             // Smaller distance = higher similarity
             distances.sort_by(|a, b| a.partial_cmp(b).unwrap());
         }
-        DistanceMetric::Dot => todo!(),
-        DistanceMetric::Manhattan => todo!(),
     };
 
     distances.iter().for_each(|(d, first, second)| {
