@@ -1,4 +1,4 @@
-use std::env;
+use std::{env, fmt::Display};
 
 use clap::{Parser, ValueEnum};
 use itertools::Itertools;
@@ -15,13 +15,13 @@ enum DistanceMetric {
     Manhattan,
 }
 
-impl ToString for DistanceMetric {
-    fn to_string(&self) -> String {
+impl Display for DistanceMetric {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
-            DistanceMetric::Cosine => "cosine".to_string(),
-            DistanceMetric::L2 => "l2".to_string(),
-            DistanceMetric::Dot => "dot".to_string(),
-            DistanceMetric::Manhattan => "manhattan".to_string(),
+            DistanceMetric::Cosine => write!(f, "cosine"),
+            DistanceMetric::L2 => write!(f, "l2"),
+            DistanceMetric::Dot => write!(f, "dot"),
+            DistanceMetric::Manhattan => write!(f, "manhattan"),
         }
     }
 }
@@ -32,11 +32,11 @@ enum Provider {
     Cohere,
 }
 
-impl ToString for Provider {
-    fn to_string(&self) -> String {
+impl Display for Provider {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
-            Provider::Openai => "openai".to_string(),
-            Provider::Cohere => "cohere".to_string(),
+            Provider::Openai => write!(f, "openai"),
+            Provider::Cohere => write!(f, "cohere"),
         }
     }
 }
@@ -85,6 +85,16 @@ async fn main() {
     let mut distances = documents
         .into_iter()
         .combinations(2)
+        .map(|mut combination| {
+            combination.sort_by(|a, b| Ord::cmp(&a.document, &b.document)); // Sort the pair to make (1, 2) and (2, 1) identical
+            combination
+        })
+        .unique_by(|pair| {
+            let first = pair.first().unwrap();
+            let second = pair.last().unwrap();
+
+            (first.document.clone(), second.document.clone())
+        })
         .map(|pair| {
             let first = pair.first().unwrap();
             let second = pair.last().unwrap();
@@ -112,6 +122,6 @@ async fn main() {
     };
 
     distances.iter().for_each(|(d, first, second)| {
-        println!("{d}: \n* {first}\n* {second}");
+        println!("{d}: \n|_ {first}\n|_ {second}");
     })
 }
