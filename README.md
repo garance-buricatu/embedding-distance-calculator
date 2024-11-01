@@ -12,6 +12,7 @@ Distances between embeddings (created by defined provider/model) of each pair of
 
 ## Usage
 ```bash
+export OPENAI_API_KEY=""
 cargo build --release
 ./target/release/distance-calculator -s 'i love bananas,good morning!,muffins,bananas,bananas' -p openai -e text-embedding-ada-002 -d l2
 ```
