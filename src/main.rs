@@ -56,9 +56,6 @@ struct Args {
     distance_metric: DistanceMetric,
 }
 
-/// Usage:
-/// cargo build --release
-/// ./target/release/embedding-distance-calculator -s 'i love bananas,good morning!,muffins,bananas,bananas' -p openai -e text-embedding-ada-002 -d l2
 #[tokio::main]
 async fn main() {
     // Parse command-line arguments
