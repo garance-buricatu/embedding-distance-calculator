@@ -195,7 +195,11 @@ fn format_header(i: usize, string: &str) -> String {
         i,
         match string.len() {
             0..=10 => string.to_string(),
-            _ => format!("{}...", &string[..10]),
+            _ => if let Some(index) = string.find('.') {
+                format!("{}...", &string[..index])
+            } else {
+                format!("{}...", &string[..10])
+            }
         }
     )
 }
